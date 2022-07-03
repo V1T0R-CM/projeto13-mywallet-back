@@ -5,7 +5,7 @@ export default async function transactionMiddlewareValidation(req, res, next) {
     const validation = transactionSchema.validate(req.body);
     const { authorization } = req.headers;
     const token = authorization.replace('Bearer ', '');
-    const session =  await db.collection('sessions').findOne({ token });
+    const session =  await db.collection('sessions').findOne({ token: token });
 
     if (!session){
         return res.sendStatus(401);

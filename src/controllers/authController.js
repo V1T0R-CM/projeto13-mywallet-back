@@ -6,7 +6,7 @@ setInterval(async()=>{
     const sessions=await db.collection("sessions").find().toArray();
     for(let session of sessions){
         if(Date.now()-session.lastStatus>600000){
-            db.collection("sessions").remove(session);
+            db.collection("sessions").deleteOne(session);
         }
     }
 }, 30000);
@@ -34,4 +34,12 @@ export async function signIn(req, res) {
   } else {
     res.sendStatus(401);
   }
+}
+
+export async function logOut(req, res){
+  const { authorization } = req.headers;
+  const token = authorization.replace('Bearer ', '');
+  const session=await db.collection("sessions").findOne({token: token});
+  db.collection("sessions").deleteOne(session);
+  res.sendStatus(201)
 }
